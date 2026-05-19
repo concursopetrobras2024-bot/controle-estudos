@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Controle de Encontros — Petrobras CESGRANRIO 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --petro-blue: #003087;
+    --petro-blue-mid: #004aad;
+    --petro-blue-light: #0066cc;
+    --petro-yellow: #f5c400;
+    --petro-yellow-dark: #d4a800;
+    --green-ok: #00875a;
+    --green-bg: #e3f9ee;
+    --red-miss: #c0392b;
+    --red-bg: #fdecea;
+    --gray-1: #f4f6f9;
+    --gray-2: #e8ecf2;
+    --gray-3: #bdc6d4;
+    --gray-text: #6b7a90;
+    --dark: #0d1a2e;
+    --white: #ffffff;
+    --shadow: 0 2px 12px rgba(0,48,135,0.10);
+    --shadow-md: 0 4px 24px rgba(0,48,135,0.14);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Barlow', sans-serif;
+    background: var(--gray-1);
+    color: var(--dark);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(135deg, var(--petro-blue) 0%, var(--petro-blue-mid) 60%, var(--petro-blue-light) 100%);
+    color: var(--white);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 72px;
+    box-shadow: 0 3px 18px rgba(0,48,135,0.25);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .petro-logo {
+    width: 44px;
+    height: 44px;
+    background: var(--petro-yellow);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 15px;
+    color: var(--petro-blue);
+    letter-spacing: -0.5px;
+    flex-shrink: 0;
+  }
+
+  .brand-text h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    line-height: 1;
+  }
+
+  .brand-text p {
+    font-size: 11px;
+    opacity: 0.75;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .header-date {
+    font-size: 13px;
+    opacity: 0.8;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+  }
+
+  /* ── LAYOUT ── */
+  main {
+    max-width: 1060px;
+    margin: 0 auto;
+    padding: 32px 20px 60px;
+  }
+
+  /* ── INSTRUÇÃO ── */
+  .instructions {
+    background: var(--white);
+    border: 1px solid var(--gray-2);
+    border-left: 4px solid var(--petro-yellow);
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin-bottom: 28px;
+    box-shadow: var(--shadow);
+  }
+
+  .instructions h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--petro-blue);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .instructions ul {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px 24px;
+  }
+
+  .instructions li {
+    font-size: 13px;
+    color: var(--gray-text);
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .instructions li::before {
+    content: '→';
+    color: var(--petro-yellow-dark);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* ── STATS BAR ── */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .stat-card {
+    background: var(--white);
+    border-radius: 10px;
+    padding: 18px 20px;
+    border: 1px solid var(--gray-2);
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--gray-text);
+    font-weight: 600;
+  }
+
+  .stat-value {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 34px;
+    font-weight: 800;
+    color: var(--petro-blue);
+    line-height: 1;
+  }
+
+  .stat-value.green { color: var(--green-ok); }
+  .stat-value.yellow { color: var(--petro-yellow-dark); }
+  .stat-value.red { color: var(--red-miss); }
+
+  .stat-sub {
+    font-size: 12px;
+    color: var(--gray-3);
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-wrap {
+    background: var(--white);
+    border-radius: 10px;
+    padding: 18px 22px;
+    border: 1px solid var(--gray-2);
+    box-shadow: var(--shadow);
+    margin-bottom: 28px;
+  }
+
+  .progress-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .progress-header span {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--petro-blue);
+  }
+
+  .pct-label {
+    font-size: 20px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    color: var(--petro-blue);
+  }
+
+  .progress-bar-bg {
+    background: var(--gray-2);
+    border-radius: 100px;
+    height: 10px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--petro-blue) 0%, var(--petro-blue-light) 100%);
+    border-radius: 100px;
+    transition: width 0.6s ease;
+    min-width: 2px;
+  }
+
+  /* ── TABLE SECTION ── */
+  .table-section {
+    background: var(--white);
+    border-radius: 12px;
+    border: 1px solid var(--gray-2);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+  }
+
+  .table-header-bar {
+    background: var(--petro-blue);
+    padding: 14px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .table-header-bar h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--white);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .legend {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.75);
+  }
+
+  .dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .dot-green { background: #2ecc71; }
+  .dot-red { background: #e74c3c; }
+  .dot-gray { background: rgba(255,255,255,0.35); }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead th {
+    background: var(--gray-1);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--gray-text);
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 2px solid var(--gray-2);
+  }
+
+  thead th.center { text-align: center; }
+
+  tbody tr {
+    border-bottom: 1px solid var(--gray-2);
+    transition: background 0.15s;
+  }
+
+  tbody tr:hover { background: #f8fafd; }
+
+  tbody tr.row-done { background: #f4fff9; }
+  tbody tr.row-miss { background: #fff8f8; }
+  tbody tr.row-future { background: var(--white); }
+  tbody tr.row-today { background: #fffbe6; border-left: 3px solid var(--petro-yellow); }
+
+  td {
+    padding: 11px 14px;
+    font-size: 14px;
+    vertical-align: middle;
+  }
+
+  td.center { text-align: center; }
+
+  .date-cell strong {
+    display: block;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .date-cell span {
+    font-size: 11px;
+    color: var(--gray-3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .day-badge {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 100px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .day-seg { background: #e8f0fe; color: #1a56cc; }
+  .day-ter { background: #fce8ff; color: #8b1aad; }
+  .day-qui { background: #e8fff4; color: #0d8050; }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 11px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+    border: none;
+    outline: none;
+    transition: all 0.18s;
+  }
+
+  .badge-done { background: var(--green-bg); color: var(--green-ok); }
+  .badge-miss { background: var(--red-bg); color: var(--red-miss); }
+  .badge-pending { background: var(--gray-2); color: var(--gray-text); }
+  .badge-today { background: #fff8e1; color: #b8860b; border: 1px solid #f5c400; }
+
+  .status-badge:hover { opacity: 0.8; transform: scale(1.04); }
+
+  /* checkbox presença */
+  .presence-cell {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .pres-check {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .pres-check label {
+    font-size: 10px;
+    color: var(--gray-text);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .pres-check input[type="checkbox"] {
+    width: 17px;
+    height: 17px;
+    accent-color: var(--petro-blue);
+    cursor: pointer;
+  }
+
+  textarea.obs-field {
+    font-family: 'Barlow', sans-serif;
+    font-size: 12px;
+    border: 1px solid var(--gray-2);
+    border-radius: 5px;
+    padding: 5px 8px;
+    width: 100%;
+    min-width: 140px;
+    resize: vertical;
+    color: var(--dark);
+    background: transparent;
+    transition: border 0.15s;
+    min-height: 32px;
+  }
+
+  textarea.obs-field:focus {
+    outline: none;
+    border-color: var(--petro-blue-light);
+    background: var(--white);
+  }
+
+  .today-tag {
+    display: inline-block;
+    background: var(--petro-yellow);
+    color: var(--petro-blue);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 100px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  .save-btn {
+    background: var(--petro-blue);
+    color: var(--white);
+    border: none;
+    border-radius: 7px;
+    padding: 10px 22px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: background 0.18s;
+    margin-top: 20px;
+    display: block;
+    margin-left: auto;
+  }
+
+  .save-btn:hover { background: var(--petro-blue-light); }
+
+  .save-toast {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    background: var(--green-ok);
+    color: var(--white);
+    padding: 12px 22px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+    opacity: 0;
+    transform: translateY(12px);
+    transition: all 0.3s;
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  .save-toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 12px;
+    color: var(--gray-3);
+    letter-spacing: 0.5px;
+  }
+
+  @media (max-width: 700px) {
+    .stats-bar { grid-template-columns: 1fr 1fr; }
+    .instructions ul { grid-template-columns: 1fr; }
+    .legend { display: none; }
+    td, th { font-size: 12px; padding: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-brand">
+    <div class="petro-logo">PBR</div>
+    <div class="brand-text">
+      <h1>Controle de Encontros de Estudo</h1>
+      <p>Petrobras · Engenharia de Produção · CESGRANRIO 2026</p>
+    </div>
+  </div>
+  <div class="header-date" id="headerDate"></div>
+</header>
+
+<main>
+
+  <!-- INSTRUÇÃO -->
+  <div class="instructions">
+    <h2>📋 Como usar este painel</h2>
+    <ul>
+      <li>Use o campo Observações para anotar o que foi estudado</li>
+      <li>Clique em "Salvar Progresso" para persistir localmente</li>
+      <li>Encontros futuros ficam como "Pendente" automaticamente</li>
+      <li>O resumo no topo é atualizado em tempo real</li>
+    </ul>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat-card">
+      <div class="stat-label">Total de Encontros</div>
+      <div class="stat-value" id="st-total">—</div>
+      <div class="stat-sub">até hoje</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Realizados</div>
+      <div class="stat-value green" id="st-done">—</div>
+      <div class="stat-sub">encontros concluídos</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Não Realizados</div>
+      <div class="stat-value red" id="st-miss">—</div>
+      <div class="stat-sub">encontros perdidos</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">% de Presença</div>
+      <div class="stat-value yellow" id="st-pct">—</div>
+      <div class="stat-sub">taxa de comparecimento</div>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap">
+    <div class="progress-header">
+      <span>📈 Taxa de Realização dos Encontros</span>
+      <div class="pct-label" id="pct-num">0%</div>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-section">
+    <div class="table-header-bar">
+      <h2>📅 Registro de Encontros</h2>
+      <div class="legend">
+        <div class="legend-item"><div class="dot dot-green"></div> Realizado</div>
+        <div class="legend-item"><div class="dot dot-red"></div> Não Realizado</div>
+        <div class="legend-item"><div class="dot dot-gray"></div> Pendente</div>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Data</th>
+          <th>Dia</th>
+          <th class="center">Status</th>
+          <th class="center">Presença</th>
+          <th>Observações</th>
+        </tr>
+      </thead>
+      <tbody id="meetingTableBody"></tbody>
+    </table>
+  </div>
+
+  <button class="save-btn" onclick="saveData()">💾 Salvar Progresso</button>
+
+</main>
+
+<footer>Painel gerado para estudo conjunto · Concurso Petrobras 2026 · Banca CESGRANRIO</footer>
+
+<div class="save-toast" id="toast">✅ Progresso salvo com sucesso!</div>
+
+<script>
+// ── GERAÇÃO DAS DATAS ────────────────────────────────
+// Segunda = 1, Terça = 2, Quinta = 4
+const TARGET_DAYS = [1, 2, 4];
+const START_DATE  = new Date(2026, 4, 19); // 19/05/2026 (mês é 0-based)
+const MONTHS_AHEAD = 6; // gera 6 meses de datas
+
+function generateDates(start, monthsAhead) {
+  const dates = [];
+  const end = new Date(start);
+  end.setMonth(end.getMonth() + monthsAhead);
+  let cur = new Date(start);
+  while (cur <= end) {
+    if (TARGET_DAYS.includes(cur.getDay())) {
+      dates.push(new Date(cur));
+    }
+    cur.setDate(cur.getDate() + 1);
+  }
+  return dates;
+}
+
+const DATES = generateDates(START_DATE, MONTHS_AHEAD);
+
+// ── DATA DE HOJE ─────────────────────────────────────
+const today = new Date();
+today.setHours(0,0,0,0);
+
+function isSameDay(a, b) {
+  return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
+}
+
+function isPast(d) {
+  const dd = new Date(d); dd.setHours(0,0,0,0);
+  return dd < today;
+}
+
+function isFuture(d) {
+  const dd = new Date(d); dd.setHours(0,0,0,0);
+  return dd > today;
+}
+
+// ── ESTADO ───────────────────────────────────────────
+const KEY = 'petro_study_v2';
+let state = {};
+
+function loadState() {
+  try { state = JSON.parse(localStorage.getItem(KEY)) || {}; } catch { state = {}; }
+}
+
+function saveData() {
+  localStorage.setItem(KEY, JSON.stringify(state));
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ── NOMES ─────────────────────────────────────────────
+const DAY_NAMES = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+const DAY_FULL  = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+const MONTH_NAMES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+
+function fmtDate(d) {
+  return `${String(d.getDate()).padStart(2,'0')}/${MONTH_NAMES[d.getMonth()]}/${d.getFullYear()}`;
+}
+
+// ── RENDER ─────────────────────────────────────────────
+function render() {
+  const tbody = document.getElementById('meetingTableBody');
+  tbody.innerHTML = '';
+
+  DATES.forEach((date, idx) => {
+    const key = date.toISOString().split('T')[0];
+    if (!state[key]) state[key] = { status: 'pending', me: false, friend: false, obs: '' };
+    const s = state[key];
+
+    const isToday   = isSameDay(date, today);
+    const past      = isPast(date) && !isToday;
+    const future    = isFuture(date);
+    const dayIdx    = date.getDay();
+
+    let rowClass = 'row-future';
+    if (isToday) rowClass = 'row-today';
+    else if (s.status === 'done')  rowClass = 'row-done';
+    else if (s.status === 'miss')  rowClass = 'row-miss';
+
+    // Status badge
+    let badgeClass = 'badge-pending';
+    let badgeText  = '⏳ Pendente';
+    if (isToday && s.status === 'pending') { badgeClass = 'badge-today'; badgeText = '🔵 Hoje'; }
+    if (s.status === 'done')  { badgeClass = 'badge-done'; badgeText = '✅ Realizado'; }
+    if (s.status === 'miss')  { badgeClass = 'badge-miss'; badgeText = '❌ Não realizado'; }
+
+    // Day badge
+    const dayClassMap = { 1:'day-seg', 2:'day-ter', 4:'day-qui' };
+    const dayClass = dayClassMap[dayIdx] || '';
+
+    const todayTag = isToday ? '<span class="today-tag">hoje</span>' : '';
+
+    const tr = document.createElement('tr');
+    tr.className = rowClass;
+    tr.innerHTML = `
+      <td style="color:var(--gray-3);font-size:12px;font-weight:600;">${String(idx+1).padStart(2,'0')}</td>
+      <td class="date-cell">
+        <strong>${fmtDate(date)}${todayTag}</strong>
+        <span>${DAY_FULL[dayIdx]}</span>
+      </td>
+      <td><span class="day-badge ${dayClass}">${DAY_NAMES[dayIdx]}</span></td>
+      <td class="center">
+        <button class="status-badge ${badgeClass}" onclick="cycleStatus('${key}')" title="Clique para alterar">${badgeText}</button>
+      </td>
+      <td>
+        <div class="presence-cell">
+          <div class="pres-check">
+            <input type="checkbox" id="me-${key}" ${s.me ? 'checked' : ''} onchange="toggleMe('${key}', this.checked)">
+            <label for="me-${key}">Andréa</label>
+          </div>
+          <div class="pres-check">
+            <input type="checkbox" id="fr-${key}" ${s.friend ? 'checked' : ''} onchange="toggleFriend('${key}', this.checked)">
+            <label for="fr-${key}">Gabriel</label>
+          </div>
+        </div>
+      </td>
+      <td>
+        <textarea class="obs-field" placeholder="O que foi estudado..." onchange="updateObs('${key}', this.value)">${s.obs || ''}</textarea>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  updateStats();
+  updateHeaderDate();
+}
+
+function cycleStatus(key) {
+  const cur = state[key].status;
+  state[key].status = cur === 'pending' ? 'done' : cur === 'done' ? 'miss' : 'pending';
+  render();
+}
+
+function toggleMe(key, val)     { state[key].me = val; updateStats(); }
+function toggleFriend(key, val) { state[key].friend = val; updateStats(); }
+function updateObs(key, val)    { state[key].obs = val; }
+
+// ── STATS ──────────────────────────────────────────────
+function updateStats() {
+  let total = 0, done = 0, miss = 0;
+  DATES.forEach(date => {
+    const d = new Date(date); d.setHours(0,0,0,0);
+    if (d <= today) {
+      total++;
+      const key = date.toISOString().split('T')[0];
+      if (state[key]?.status === 'done') done++;
+      if (state[key]?.status === 'miss') miss++;
+    }
+  });
+
+  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+
+  document.getElementById('st-total').textContent = total;
+  document.getElementById('st-done').textContent  = done;
+  document.getElementById('st-miss').textContent  = miss;
+  document.getElementById('st-pct').textContent   = pct + '%';
+  document.getElementById('pct-num').textContent  = pct + '%';
+  document.getElementById('progress-fill').style.width = pct + '%';
+}
+
+function updateHeaderDate() {
+  const opts = { weekday:'long', year:'numeric', month:'long', day:'numeric' };
+  document.getElementById('headerDate').textContent = today.toLocaleDateString('pt-BR', opts);
+}
+
+// ── INIT ───────────────────────────────────────────────
+loadState();
+render();
+// auto-save on page unload
+window.addEventListener('beforeunload', saveData);
+</script>
+</body>
+</html>
